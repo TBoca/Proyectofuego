@@ -5,20 +5,26 @@ let superior = 1;
 let colors;
 let colorSeleccionado = 0;
 let fondo = 255;
+let margenGeneral = 20; // Nuevo margen general
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 2 * margenGeneral, windowHeight - 2 * margenGeneral);
   relleno = color(234, 182, 118);
   colors = [
-    color(255, 0, 0, 180),      // Rojo brillante
-    color(0, 200, 255, 180),    // Celeste brillante
-    color(0, 255, 80, 180)      // Verde brillante
+    color(255, 0, 0, 10),      // Rojo brillante
+    color(0, 200, 255, 10),    // Celeste brillante
+    color(0, 255, 80, 10)      // Verde brillante
   ];
   background(fondo);
+  // Mueve el canvas para dejar margen
+  let c = document.getElementsByTagName('canvas')[0];
+  c.style.position = 'absolute';
+  c.style.left = margenGeneral + 'px';
+  c.style.top = margenGeneral + 'px';
 }
 
 function draw() {
-  background(fondo);
+  //background(fondo);
 
   // Dimensiones dinámicas
   let margenDerecho = 20;
@@ -118,7 +124,7 @@ function draw() {
   pop();
 
   // Fondo negro
-  let textoNegro = "FONDO\nNEGRO";
+  /*let textoNegro = "FONDO\nNEGRO";
   let xNegro = width - panelLateralAncho - margenDerecho + 30;
   let yNegro = 30 + altoBotonLateral + altoBotonLateral / 2 - 40; // Centrado verticalmente
   push();
@@ -134,15 +140,15 @@ function draw() {
     }
   }
   pop();
-  textAlign(LEFT, BASELINE);
+  textAlign(LEFT, BASELINE);*/
 }
 
 function dibujarFlame(caso) {
-  let escala = 200;
-  let cantidad = 4000;
-  let tamPunto = 5;
-  if (caso === 2) escala = 120; // Más compacto el caso 2
-  if (caso === 3) escala = 90;
+  let escala = 400; 
+  let cantidad = 100;
+  let tamPunto = 2;
+  if (caso === 2) escala = 220; // Más compacto el caso 2
+  if (caso === 3) escala = 190;
 
   for (let i = 0; i < cantidad; i++) {
     let x = random(-1, 1);
@@ -202,6 +208,7 @@ function mousePressed(){
     let y = margen;
     if(mouseX > x && mouseX < x + botonAncho && mouseY > y && mouseY < y + botonAlto) {
       superior = i + 1;
+      background(fondo);
     }
   }
 

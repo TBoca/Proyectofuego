@@ -6,7 +6,7 @@ function setup() {
   createCanvas(800, 800);
   background(255);
   colors = [
-    color(255, 120, 0, 10),   // naranja translúcido
+    color(255, 0, 0, 50),   // naranja translúcido
     color(0, 150, 255, 10),   // azul translúcido
     color(180, 255, 100, 10)  // verde claro translúcido
   ];
@@ -14,6 +14,7 @@ function setup() {
 }
 
 function draw() {
+    
   translate(width / 2, height / 2);
   
   for (let i = 0; i < 500; i++) {
@@ -37,5 +38,5 @@ function draw() {
   }
   
   // Detenemos después de muchos cuadros
-  if (frameCount > 300) noLoop();
+  if (frameCount > 5000) noLoop();
 }
