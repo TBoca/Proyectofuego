@@ -1,0 +1,15 @@
+---
+title: "imagen generativa"
+format: html
+editor: visual
+---
+
+## 
+
+```{r}
+library(aRtsy)
+```
+
+```{r}
+canvas_flame(colors = c("white", "green"), variations = 1)
+```
