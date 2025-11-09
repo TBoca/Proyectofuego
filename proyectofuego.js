@@ -119,8 +119,7 @@ function dibujarTextoRegion(){
         "espinal": "Llanuras y serranías bajas dominadas por algarrobos, ñandubay y caldén; bosque abierto de porte reducido, que sufrió desmontes, fuego e incendios —se identificaron miles de hectáreas quemadas en temporadas recientes",
         "yungas": "Selva nublada montana con gran altitud, lianas, epífitas y estrato arbóreo denso; la explotación maderera, la agricultura intensiva y la ganadería provocaron su pérdida, y los incendios recientes han agravado la degradación",
         "monte": "Estepa arbustiva de jarilla y bosques de algarrobos en valles intermontanos semiáridos; la tala indiscriminada, el sobrepastoreo y los incendios han dejado sistemas muy degradados y de muy baja productividad.",
-        "paranaense": "Bosque subtropical con maderas de ley (cedrela, lapacho, etc) y alto valor genético; la conversión a cultivos, plantaciones y la explotación histórica han generado fuerte pérdida, y los incendios también están presentes aunque con menor magnitud registrada.",
-        "chaco": "Región de bosque xerófilo caducifolio con predominio de quebrachos, fuertemente afectada por la expansión agropecuaria, tala selectiva y fragmentación; los incendios también contribuyen notablemente a la pérdida forestal"
+        "paranaense": "Bosque subtropical con maderas de ley (cedrela, lapacho, etc) y alto valor genético; la conversión a cultivos, plantaciones y la explotación histórica han generado fuerte pérdida, y los incendios también están presentes aunque con menor magnitud registrada."
     };
     
     let texto = textos[regionSeleccionada];
