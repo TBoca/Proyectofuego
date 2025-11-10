@@ -41,7 +41,7 @@ function preload(){
 
 function setup(){
     
-  createCanvas(windowWidth-20, windowHeight-20);
+  createCanvas(windowWidth, windowHeight);
   background(0);
   rectMode(CENTER,CENTER);
   textAlign(CENTER,CENTER);
@@ -63,6 +63,14 @@ function setup(){
   botonInicio.mousePressed(() => {
     window.location.href = 'index.html';
   });
+}
+
+// Función para redimensionar el canvas cuando cambia el tamaño de ventana
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  pajaroY = height - 100;
+  // Reposicionar botón
+  botonInicio.position(width / 2 - 100, height - 60);
 }
 
 function draw(){

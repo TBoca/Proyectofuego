@@ -21,11 +21,18 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(1200, 800);
+  createCanvas(windowWidth, windowHeight);
   textAlign(CENTER, CENTER);
   textFont('Chewy');
 }
 
+// Función para redimensionar cuando cambia el tamaño de ventana
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  if (botonVolver) {
+    botonVolver.position(width / 2 - 100, height - 150);
+  }
+}
 
 function draw() {
   background(220);
