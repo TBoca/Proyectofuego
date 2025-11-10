@@ -53,22 +53,70 @@ function draw() {
       let imagenActual = imagenes[preguntaIndex];
       let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * 500 : 0;
       let y = 150 + altoImagen + i * 50; // Aumentado de 120 a 150 para más espacio
-
+      
+      // Dimensiones del contenedor
+      let anchoContenedor = 600;
+      let altoContenedor = 42;
+      
+      // Detectar hover para efecto visual
+      let isHover = mouseX > width / 2 - anchoContenedor/2 && 
+                    mouseX < width / 2 + anchoContenedor/2 && 
+                    mouseY > y - altoContenedor/2 && 
+                    mouseY < y + altoContenedor/2;
+      
+      // Dibujar contenedor de respuesta
+      push();
+      
+      // Determinar color del contenedor según el estado
       if (respuestaSeleccionada === i) {
         if(incorrecta){
-           fill(255, 0, 0); // Resaltar la respuesta mal
+          fill(255, 100, 100, 200); // Rojo claro para incorrecta
+          stroke(255, 0, 0);
+          strokeWeight(3);
         } else {
-          fill(0, 255, 0); // Resaltar la respuesta bien
+          fill(100, 255, 100, 200); // Verde claro para correcta
+          stroke(0, 200, 0);
+          strokeWeight(3);
+        }
+      } else if(respuestaAnterior === i){
+        fill(255, 150, 150, 180); // Rojo más suave para respuesta anterior incorrecta
+        stroke(255, 0, 0);
+        strokeWeight(2);
+      } else if(isHover) {
+        fill(255, 200, 100, 150); // Naranja claro en hover
+        stroke(255, 150, 0);
+        strokeWeight(2);
+      } else {
+        fill(255, 255, 255, 180); // Blanco semi-transparente
+        stroke(100, 100, 100);
+        strokeWeight(2);
+      }
+      
+      // Dibujar rectángulo con bordes redondeados
+      rectMode(CENTER);
+      rect(width / 2, y, anchoContenedor, altoContenedor, 10);
+      pop();
+      
+      // Dibujar texto de la opción
+      push();
+      if (respuestaSeleccionada === i) {
+        if(incorrecta){
+           fill(255, 0, 0); // Texto rojo para respuesta mal
+        } else {
+          fill(0, 150, 0); // Texto verde oscuro para respuesta bien
         }
       } else{
         if(respuestaAnterior===i){
-          fill(255, 0, 0); // Resaltar la respuesta mal
+          fill(255, 0, 0); // Texto rojo para respuesta anterior mal
         }else{
           fill(0); // Color normal de las respuestas (negro)
         }
-         
-      } 
+      }
+      
+      textAlign(CENTER, CENTER);
+      textSize(20);
       text(pregunta.opciones[i], width / 2, y);
+      pop();
     }
   }
   
@@ -120,10 +168,17 @@ function mousePressed() {
     let imagenActual = imagenes[preguntaIndex];
     let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * 500 : 0;
     
+    // Dimensiones del contenedor (iguales a las de draw())
+    let anchoContenedor = 600;
+    let altoContenedor = 42;
+    
     for (let i = 0; i < pregunta.opciones.length; i++) {
       let y = 150 + altoImagen + i * 50; // Aumentado de 120 a 150 para coincidir con draw()
 
-      if (mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > y - 20 && mouseY < y + 20) {
+      if (mouseX > width / 2 - anchoContenedor/2 && 
+          mouseX < width / 2 + anchoContenedor/2 && 
+          mouseY > y - altoContenedor/2 && 
+          mouseY < y + altoContenedor/2) {
         respuestaSeleccionada = i;
         verificarRespuesta(pregunta);
         break;
