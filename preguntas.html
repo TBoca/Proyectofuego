@@ -10,15 +10,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Preguntas sobre Regiones Forestales</title>
     <style>
-      body {
+      html, body {
         margin: 0;
         padding: 0;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
         font-family: 'Chewy', cursive;
+        width: 100%;
+        height: auto;
+        position: relative;
       }
+      
       button {
         font-family: 'Chewy', cursive;
         font-size: 18px;
+      }
+      
+      /* Asegurar que el canvas no se desborde y esté centrado */
+      main {
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      
+      canvas {
+        display: block;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        margin: 0 auto;
       }
     </style>
   </head>

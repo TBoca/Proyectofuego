@@ -50,7 +50,7 @@ function setup(){
   
   // Crear botón para volver al inicio (solo visible en vista principal)
   botonInicio = createButton("🏠 Volver al Inicio");
-  botonInicio.position(width / 2 - 100, height - 60);
+  botonInicio.position(width / 2 - 100, height - 80);
   botonInicio.size(200, 50);
   botonInicio.style('font-family', 'Chewy, cursive');
   botonInicio.style('font-size', '18px');
@@ -70,7 +70,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   pajaroY = height - 100;
   // Reposicionar botón
-  botonInicio.position(width / 2 - 100, height - 60);
+  botonInicio.position(width / 2 - 100, height - 80);
 }
 
 function draw(){
@@ -234,3 +234,37 @@ function dibujarTituloEnlace(){
     pop();
 }
 
+// Función para detectar clicks en el botón "Volver" del canvas
+function mousePressed() {
+  // Solo verificar si hay una región seleccionada (cuando el botón está visible)
+  if(regionSeleccionada !== null) {
+    // Calcular dimensiones del botón (igual que en dibujarBotonVolver)
+    let anchoBoton, altoBoton, margenInferior;
+    
+    if(width < 480) {
+      anchoBoton = 120;
+      altoBoton = 40;
+      margenInferior = 20;
+    } else if(width < 768) {
+      anchoBoton = 140;
+      altoBoton = 45;
+      margenInferior = 25;
+    } else {
+      anchoBoton = 150;
+      altoBoton = 50;
+      margenInferior = 30;
+    }
+    
+    let x = windowWidth / 2;
+    let y = windowHeight - altoBoton/2 - margenInferior;
+    
+    // Verificar si el click fue sobre el botón Volver
+    if(mouseX > x - anchoBoton/2 && mouseX < x + anchoBoton/2 && 
+       mouseY > y - altoBoton/2 && mouseY < y + altoBoton/2) {
+      // Volver a la vista de selección de regiones
+      regionSeleccionada = null;
+      imagenActiva = "bosque";
+      return false; // Prevenir propagación del evento
+    }
+  }
+}

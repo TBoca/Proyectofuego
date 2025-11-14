@@ -42,15 +42,16 @@ function dibujarBotonRegion(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel, _im
     }
   
   // Dibujar imagen arriba del botón solo si NO hay región seleccionada
-  if(_imagen && imagenesRegiones[_imagen.toLowerCase()] && (typeof regionSeleccionada === 'undefined' || regionSeleccionada === null)) {
+  if(_imagen && imagenesRegiones[_imagen.toLowerCase()] && 
+     (typeof regionSeleccionada === 'undefined' || regionSeleccionada === null)) {
     let img = imagenesRegiones[_imagen.toLowerCase()];
     
     // Ajustar altura de imagen según el tamaño de pantalla
     let alturaImagen;
     if(width < 480) {
-      alturaImagen = 120; // Móviles pequeños
+      alturaImagen = 140; // Móviles pequeños - MÁS GRANDE (antes 110)
     } else if(width < 768) {
-      alturaImagen = 180; // Tablets
+      alturaImagen = 200; // Tablets - MÁS GRANDE (antes 160)
     } else if(width < 1024) {
       alturaImagen = 280; // Tablets grandes
     } else {
@@ -60,13 +61,13 @@ function dibujarBotonRegion(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel, _im
     let anchoImagen = (img.width / img.height) * alturaImagen; // Mantener proporción
     
     // Si el ancho calculado es mayor que el disponible, ajustar
-    let anchoDisponible = _ancho * (width < 768 ? 1.5 : 2.0); // Menos ancho en móviles
+    let anchoDisponible = _ancho * (width < 768 ? 2.5 : 2.0); // AÚN MÁS ancho disponible en móviles
     if(anchoImagen > anchoDisponible) {
       anchoImagen = anchoDisponible;
       alturaImagen = (img.height / img.width) * anchoImagen;
     }
     
-    let imgY = _y - _alto/2 - alturaImagen/2 - (width < 768 ? 15 : 30); // Menos separación en móviles
+    let imgY = _y - _alto/2 - alturaImagen/2 - (width < 768 ? 15 : 30); // Separación ajustada
     
     imageMode(CENTER);
     image(img, _x, imgY, anchoImagen, alturaImagen);
@@ -81,9 +82,9 @@ function dibujarBotonRegion(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel, _im
   textFont('Chewy'); // Aplicar tipografía Chewy
   let tamanoTexto;
   if(width < 480) {
-    tamanoTexto = 12; // Móviles pequeños
+    tamanoTexto = 11; // Móviles pequeños - más pequeño para que quepa
   } else if(width < 768) {
-    tamanoTexto = 16; // Tablets
+    tamanoTexto = 15; // Tablets
   } else if(_ancho < 150) {
     tamanoTexto = 22; // Texto más pequeño para botones angostos
   } else {
@@ -110,14 +111,14 @@ function dibujarBotonesInferiores(){
   
   if(width < 480) {
     // Móviles pequeños
-    anchoBoton = 100;
-    altoBoton = 40;
-    sep = 150;
+    anchoBoton = 95;
+    altoBoton = 38;
+    sep = 175; // MÁS separación para mover todo más arriba (antes 135)
   } else if(width < 768) {
     // Tablets
-    anchoBoton = 140;
-    altoBoton = 50;
-    sep = 210;
+    anchoBoton = 130;
+    altoBoton = 48;
+    sep = 240; // MÁS separación para mover todo más arriba (antes 190)
   } else if(width < 1024) {
     // Tablets grandes
     anchoBoton = 180;
@@ -135,13 +136,28 @@ function dibujarBotonesInferiores(){
     // No dibujar nada cuando hay región seleccionada
     return;
   } else {
-    // Dibujar todos los botones si no hay región seleccionada
-    dibujarBotonRegion(windowWidth*1/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Patagonia", color(100, 150, 200), color(255), "Patagonia");
-    dibujarBotonRegion(windowWidth*2/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Yungas", color(120, 180, 100), color(255), "Yungas");
-    dibujarBotonRegion(windowWidth*3/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Monte", color(200, 120, 80), color(255), "Monte");
-    dibujarBotonRegion(windowWidth*4/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Paranaense", color(180, 150, 60), color(0), "Paranaense");
-    dibujarBotonRegion(windowWidth*5/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Chaco", color(150, 100, 180), color(255), "Chaco");
-    dibujarBotonRegion(windowWidth*6/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Espinal", color(200, 80, 120), color(255), "Espinal");
+    // Layout diferente para móviles: 3 arriba, 3 abajo
+    if(width < 768) {
+      let separacionFilas = width < 480 ? 170 : 220; // Mayor separación entre filas para imágenes grandes (antes 135 y 180)
+      
+      // Primera fila (3 botones)
+      dibujarBotonRegion(windowWidth*1/4, windowHeight-altoBoton-sep-separacionFilas, anchoBoton, altoBoton, "Patagonia", color(100, 150, 200), color(255), "Patagonia");
+      dibujarBotonRegion(windowWidth*2/4, windowHeight-altoBoton-sep-separacionFilas, anchoBoton, altoBoton, "Yungas", color(120, 180, 100), color(255), "Yungas");
+      dibujarBotonRegion(windowWidth*3/4, windowHeight-altoBoton-sep-separacionFilas, anchoBoton, altoBoton, "Monte", color(200, 120, 80), color(255), "Monte");
+      
+      // Segunda fila (3 botones)
+      dibujarBotonRegion(windowWidth*1/4, windowHeight-altoBoton-90, anchoBoton, altoBoton, "Paranaense", color(180, 150, 60), color(0), "Paranaense");
+      dibujarBotonRegion(windowWidth*2/4, windowHeight-altoBoton-90, anchoBoton, altoBoton, "Chaco", color(150, 100, 180), color(255), "Chaco");
+      dibujarBotonRegion(windowWidth*3/4, windowHeight-altoBoton-90, anchoBoton, altoBoton, "Espinal", color(200, 80, 120), color(255), "Espinal");
+    } else {
+      // Escritorio: todos en una fila
+      dibujarBotonRegion(windowWidth*1/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Patagonia", color(100, 150, 200), color(255), "Patagonia");
+      dibujarBotonRegion(windowWidth*2/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Yungas", color(120, 180, 100), color(255), "Yungas");
+      dibujarBotonRegion(windowWidth*3/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Monte", color(200, 120, 80), color(255), "Monte");
+      dibujarBotonRegion(windowWidth*4/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Paranaense", color(180, 150, 60), color(0), "Paranaense");
+      dibujarBotonRegion(windowWidth*5/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Chaco", color(150, 100, 180), color(255), "Chaco");
+      dibujarBotonRegion(windowWidth*6/7, windowHeight-altoBoton-sep, anchoBoton, altoBoton, "Espinal", color(200, 80, 120), color(255), "Espinal");
+    }
   }
 }
 
@@ -169,18 +185,14 @@ function dibujarBotonVolver(){
   let x = windowWidth / 2; // Centrado horizontalmente
   let y = windowHeight - altoBoton/2 - margenInferior;
   
-  let colfinal = color(255, 100, 100); // Color rojo claro
+  let colfinal = color(255, 150, 100); // Color naranja claro
   
-  // Detectar hover y click
-  if(mouseX > x - anchoBoton/2 && mouseX < x + anchoBoton/2 && 
-     mouseY > y - altoBoton/2 && mouseY < y + altoBoton/2) {
-    colfinal = lerpColor(color(255, 100, 100), color(255, 255, 255), 0.5); // Más claro al hover
-    
-    if(mouseIsPressed) {
-      // Volver a la vista inicial
-      regionSeleccionada = null;
-      imagenActiva = "bosque";
-    }
+  // Detectar hover
+  let sobreBoton = mouseX > x - anchoBoton/2 && mouseX < x + anchoBoton/2 && 
+                   mouseY > y - altoBoton/2 && mouseY < y + altoBoton/2;
+  
+  if(sobreBoton) {
+    colfinal = lerpColor(color(255, 150, 100), color(255, 255, 255), 0.5); // Más claro al hover
   }
   
   // Dibujar botón

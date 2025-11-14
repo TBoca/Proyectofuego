@@ -21,16 +21,39 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  textAlign(CENTER, CENTER);
+  // Calcular altura dinámica del canvas
+  let alturaCanvas = windowHeight;
+  
+  // En móviles, hacer el canvas más alto para permitir scroll
+  if(windowWidth < 768) {
+    alturaCanvas = max(windowHeight, 900); // Mínimo 900px en móviles
+  }
+  
+  createCanvas(windowWidth, alturaCanvas);
+  textAlign(CENTER, TOP);
   textFont('Chewy');
+  
+  // Debug: verificar que las preguntas se cargaron
+  console.log("Preguntas cargadas:", preguntas);
+  if(preguntas && preguntas.preguntas) {
+    console.log("Cantidad de preguntas:", preguntas.preguntas.length);
+  } else {
+    console.error("ERROR: No se cargaron las preguntas");
+  }
 }
 
 // Función para redimensionar cuando cambia el tamaño de ventana
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  let alturaCanvas = windowHeight;
+  
+  if(windowWidth < 768) {
+    alturaCanvas = max(windowHeight, 900);
+  }
+  
+  resizeCanvas(windowWidth, alturaCanvas);
   if (botonVolver) {
-    botonVolver.position(width / 2 - 100, height - 150);
+    let anchoBoton = windowWidth < 480 ? 160 : 200;
+    botonVolver.position(windowWidth / 2 - anchoBoton/2, height - (windowWidth < 768 ? 100 : 130));
   }
 }
 
@@ -45,25 +68,44 @@ function draw() {
     let pregunta = preguntas.preguntas[preguntaIndex];
 
     // Ajustar tamaño de texto de pregunta según pantalla
-    let tamanoPregunta = width < 480 ? 16 : (width < 768 ? 20 : 24);
+    let tamanoPregunta = width < 480 ? 18 : (width < 768 ? 22 : 24);
     textSize(tamanoPregunta);
-    text(pregunta.pregunta, width / 2, width < 768 ? 40 : 60);
+    
+    // Fondo para la pregunta para mejor legibilidad
+    push();
+    fill(255, 255, 255, 200);
+    noStroke();
+    rectMode(CENTER);
+    let anchoPregunta = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 700);
+    let yPregunta = width < 768 ? 50 : 70;
+    rect(width / 2, yPregunta, anchoPregunta, width < 480 ? 70 : 80, 10);
+    pop();
+    
+    fill(0);
+    textAlign(CENTER);
+    // Centrar el texto dentro del contenedor
+    text(pregunta.pregunta, width / 2, yPregunta);
 
     // Mostrar imagen correspondiente a la pregunta - responsive
     let imagenActual = imagenes[preguntaIndex];
     if (imagenActual) {
       let anchoImagen;
       if(width < 480) {
-        anchoImagen = width * 0.9; // 90% del ancho en móviles
+        anchoImagen = width * 0.7; // 70% del ancho en móviles
       } else if(width < 768) {
-        anchoImagen = width * 0.7; // 70% en tablets
+        anchoImagen = width * 0.55; // 55% en tablets
       } else {
-        anchoImagen = 500; // Tamaño fijo en escritorio
+        anchoImagen = 380; // Tamaño fijo en escritorio
       }
       
       let altoImagen = (imagenActual.height / imagenActual.width) * anchoImagen;
-      let yImagen = width < 768 ? 70 : 100; // Más arriba en móviles
-      image(imagenActual, width / 2 - anchoImagen / 2, yImagen, anchoImagen, altoImagen);
+      let yImagen = width < 768 ? 110 : 130;
+      
+      // Centrar la imagen
+      push();
+      imageMode(CENTER);
+      image(imagenActual, width / 2, yImagen + altoImagen / 2, anchoImagen, altoImagen);
+      pop();
     }
 
     // Ajustar tamaño de texto de opciones según pantalla
@@ -72,15 +114,16 @@ function draw() {
     
     for (let i = 0; i < pregunta.opciones.length; i++) {
       let imagenActual = imagenes[preguntaIndex];
-      let anchoImagen = width < 480 ? width * 0.9 : (width < 768 ? width * 0.7 : 500);
+      let anchoImagen = width < 480 ? width * 0.7 : (width < 768 ? width * 0.55 : 380);
       let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * anchoImagen : 0;
-      let yBase = width < 768 ? 70 : 100;
-      let espaciadoOpciones = width < 480 ? 40 : (width < 768 ? 45 : 50);
-      let y = yBase + altoImagen + 50 + i * espaciadoOpciones;
+      let yBase = width < 768 ? 110 : 130;
+      let espaciadoOpciones = width < 480 ? 50 : (width < 768 ? 52 : 55);
+      let margenSuperior = width < 480 ? 20 : 30;
+      let y = yBase + altoImagen + margenSuperior + i * espaciadoOpciones;
       
       // Dimensiones del contenedor - responsive
-      let anchoContenedor = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 600);
-      let altoContenedor = width < 480 ? 38 : 42;
+      let anchoContenedor = width < 480 ? width * 0.9 : (width < 768 ? width * 0.8 : 550);
+      let altoContenedor = width < 480 ? 40 : 44;
       
       // Detectar hover para efecto visual
       let isHover = mouseX > width / 2 - anchoContenedor/2 && 
@@ -137,36 +180,55 @@ function draw() {
         }
       }
       
-      textAlign(CENTER, CENTER);
+      textAlign(CENTER);
       textSize(tamanoOpciones);
       text(pregunta.opciones[i], width / 2, y);
       pop();
     }
-  }
-  
-  // Mostrar puntaje en la esquina superior derecha - responsive
-  push();
-  fill(0);
-  let tamanoPuntaje = width < 480 ? 18 : (width < 768 ? 22 : 28);
-  textSize(tamanoPuntaje);
-  textAlign(RIGHT, TOP);
-  let margenPuntaje = width < 480 ? 15 : 30;
-  text("Puntaje: " + puntaje, width - margenPuntaje, margenPuntaje);
-  pop();
-  
-  // Solo mostrar mensaje si no ha finalizado
-  if(!fin){
-    let tamanoMensaje = width < 480 ? 14 : (width < 768 ? 16 : 20);
-    textSize(tamanoMensaje);
-    fill(0); // Color del mensaje (negro)
-    text(mensaje, width / 2, height - (width < 768 ? 60 : 80));
+    
+    // Solo mostrar mensaje si no ha finalizado
+    if(!fin){
+      push();
+      let tamanoMensaje = width < 480 ? 15 : (width < 768 ? 17 : 20);
+      // Fondo para el mensaje
+      fill(255, 255, 255, 220);
+      noStroke();
+      rectMode(CENTER);
+      let anchoMensaje = width < 480 ? width * 0.9 : (width < 768 ? width * 0.8 : 600);
+      let yMensaje = height - (width < 768 ? 90 : 110);
+      rect(width / 2, yMensaje, anchoMensaje, width < 480 ? 40 : 50, 10);
+      
+      fill(0);
+      textSize(tamanoMensaje);
+      textAlign(CENTER);
+      text(mensaje, width / 2, yMensaje);
+      pop();
+    }
+    
+    // Mostrar puntaje DEBAJO del mensaje - responsive
+    push();
+    rectMode(CENTER);
+    fill(255, 255, 255, 220); // Fondo blanco semi-transparente
+    noStroke();
+    let tamanoPuntaje = width < 480 ? 18 : (width < 768 ? 22 : 28);
+    let anchoCajaPuntaje = width < 480 ? 140 : 180;
+    let altoCajaPuntaje = width < 480 ? 38 : 48;
+    // Usar windowHeight para que esté visible en la pantalla actual, no al final del canvas
+    let yPuntaje = windowHeight - (width < 768 ? 40 : 50);
+    rect(width / 2, yPuntaje, anchoCajaPuntaje, altoCajaPuntaje, 8);
+    
+    fill(0);
+    textSize(tamanoPuntaje);
+    textAlign(CENTER);
+    text("Puntaje: " + puntaje, width / 2, yPuntaje);
+    pop();
   }
   
   if(fin){
     push();
     let tamanoPuntajeFinal = width < 480 ? 28 : (width < 768 ? 40 : 52);
     textSize(tamanoPuntajeFinal);
-    textAlign(CENTER, CENTER);
+    textAlign(CENTER);
     fill(puntaje >= 0 ? color(0, 150, 0) : color(200, 0, 0));
     text('Puntaje Final: ' + puntaje, width / 2, height - (width < 768 ? 50 : 60));
     pop();
@@ -199,17 +261,18 @@ function mousePressed() {
   if (preguntas.preguntas.length > 0 && (respuestaSeleccionada === -1 || respuestaAnterior != -1))  {
     let pregunta = preguntas.preguntas[preguntaIndex];
     let imagenActual = imagenes[preguntaIndex];
-    let anchoImagen = width < 480 ? width * 0.9 : (width < 768 ? width * 0.7 : 500);
+    let anchoImagen = width < 480 ? width * 0.7 : (width < 768 ? width * 0.55 : 380);
     let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * anchoImagen : 0;
     
     // Dimensiones del contenedor (iguales a las de draw()) - responsive
-    let anchoContenedor = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 600);
-    let altoContenedor = width < 480 ? 38 : 42;
-    let yBase = width < 768 ? 70 : 100;
-    let espaciadoOpciones = width < 480 ? 40 : (width < 768 ? 45 : 50);
+    let anchoContenedor = width < 480 ? width * 0.9 : (width < 768 ? width * 0.8 : 550);
+    let altoContenedor = width < 480 ? 40 : 44;
+    let yBase = width < 768 ? 110 : 130;
+    let espaciadoOpciones = width < 480 ? 50 : (width < 768 ? 52 : 55);
+    let margenSuperior = width < 480 ? 20 : 30;
     
     for (let i = 0; i < pregunta.opciones.length; i++) {
-      let y = yBase + altoImagen + 50 + i * espaciadoOpciones;
+      let y = yBase + altoImagen + margenSuperior + i * espaciadoOpciones;
 
       if (mouseX > width / 2 - anchoContenedor/2 && 
           mouseX < width / 2 + anchoContenedor/2 && 
