@@ -127,7 +127,8 @@ function dibujarTextoRegion(){
         "espinal": "Llanuras y serranías bajas dominadas por algarrobos, ñandubay y caldén; bosque abierto de porte reducido, que sufrió desmontes, fuego e incendios —se identificaron miles de hectáreas quemadas en temporadas recientes",
         "yungas": "Selva nublada montana con gran altitud, lianas, epífitas y estrato arbóreo denso; la explotación maderera, la agricultura intensiva y la ganadería provocaron su pérdida, y los incendios recientes han agravado la degradación",
         "monte": "Estepa arbustiva de jarilla y bosques de algarrobos en valles intermontanos semiáridos; la tala indiscriminada, el sobrepastoreo y los incendios han dejado sistemas muy degradados y de muy baja productividad.",
-        "paranaense": "Bosque subtropical con maderas de ley (cedrela, lapacho, etc) y alto valor genético; la conversión a cultivos, plantaciones y la explotación histórica han generado fuerte pérdida, y los incendios también están presentes aunque con menor magnitud registrada."
+        "paranaense": "Bosque subtropical con maderas de ley (cedrela, lapacho, etc) y alto valor genético; la conversión a cultivos, plantaciones y la explotación histórica han generado fuerte pérdida, y los incendios también están presentes aunque con menor magnitud registrada.",
+        "chaco": "Bosque xerófilo dominado por quebracho, algarrobo y palo santo; la deforestación, el sobrepastoreo y los incendios han reducido su extensión. Es una de las regiones más afectadas por los incendios forestales en Argentina."
     };
     
     let texto = textos[regionSeleccionada];
@@ -138,13 +139,26 @@ function dibujarTextoRegion(){
         stroke(255); // Borde blanco
         strokeWeight(4);
         textFont('Chewy');
-        textSize(50);
+        
+        // Ajustar tamaño de texto según el ancho de pantalla
+        let tamanoTexto;
+        if(width < 480) {
+            tamanoTexto = 18; // Móviles pequeños
+        } else if(width < 768) {
+            tamanoTexto = 24; // Tablets
+        } else if(width < 1024) {
+            tamanoTexto = 32; // Tablets grandes
+        } else {
+            tamanoTexto = 50; // Escritorio
+        }
+        
+        textSize(tamanoTexto);
         textAlign(CENTER, TOP);
         
-        // Posicionar el texto más abajo
+        // Posicionar el texto más abajo y ajustar según pantalla
         let x = width / 2;
-        let y = 200; // Más abajo (antes 120)
-        let anchoMaximo = width * 0.8; // 80% del ancho del canvas
+        let y = width < 768 ? 120 : 200; // Más arriba en móviles
+        let anchoMaximo = width * (width < 768 ? 0.9 : 0.8); // Usar más ancho en móviles
         
         text(texto, x, y, anchoMaximo);
         pop();
@@ -168,12 +182,25 @@ function dibujarTituloEnlace(){
     // Configurar texto
     push();
     textFont('Chewy');
-    textSize(48);
+    
+    // Ajustar tamaño de título según el ancho de pantalla
+    let tamanoTitulo;
+    if(width < 480) {
+        tamanoTitulo = 20; // Móviles pequeños
+    } else if(width < 768) {
+        tamanoTitulo = 28; // Tablets
+    } else if(width < 1024) {
+        tamanoTitulo = 36; // Tablets grandes
+    } else {
+        tamanoTitulo = 48; // Escritorio
+    }
+    
+    textSize(tamanoTitulo);
     textAlign(CENTER, TOP);
     
     // Calcular dimensiones aproximadas del texto para área de click
     let anchoTexto = textWidth(titulo);
-    let altoTexto = 60;
+    let altoTexto = tamanoTitulo + 20;
     
     // Detectar hover y cambiar color
     let sobreTitulo = mouseX > x - anchoTexto/2 && mouseX < x + anchoTexto/2 && 

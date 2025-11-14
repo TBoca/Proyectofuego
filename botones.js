@@ -14,13 +14,19 @@ function dibujarBotonGlobal(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel){
   rect(_x,_y, _ancho, _alto);
   fill(0); // Texto negro para todos los botones
   
-  // Ajustar tamaño de texto según el ancho del botón
+  // Ajustar tamaño de texto según el ancho del botón y la pantalla
   textFont('Chewy'); // Aplicar tipografía Chewy
-  if(_ancho < 150) {
-    textSize(18); // Texto más pequeño para botones angostos
+  let tamanoTexto;
+  if(width < 480) {
+    tamanoTexto = 12; // Móviles pequeños
+  } else if(width < 768) {
+    tamanoTexto = 16; // Tablets
+  } else if(_ancho < 150) {
+    tamanoTexto = 18; // Texto más pequeño para botones angostos
   } else {
-    textSize(32); // Texto normal para botones grandes
+    tamanoTexto = 32; // Texto normal para botones grandes
   }
+  textSize(tamanoTexto);
   text(_cartel,_x,_y);
 }
 
@@ -39,18 +45,28 @@ function dibujarBotonRegion(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel, _im
   if(_imagen && imagenesRegiones[_imagen.toLowerCase()] && (typeof regionSeleccionada === 'undefined' || regionSeleccionada === null)) {
     let img = imagenesRegiones[_imagen.toLowerCase()];
     
-    // Definir alto deseado y calcular ancho manteniendo proporción
-    let alturaImagen = 400; // Mucho más grande (antes 180)
+    // Ajustar altura de imagen según el tamaño de pantalla
+    let alturaImagen;
+    if(width < 480) {
+      alturaImagen = 120; // Móviles pequeños
+    } else if(width < 768) {
+      alturaImagen = 180; // Tablets
+    } else if(width < 1024) {
+      alturaImagen = 280; // Tablets grandes
+    } else {
+      alturaImagen = 400; // Escritorio
+    }
+    
     let anchoImagen = (img.width / img.height) * alturaImagen; // Mantener proporción
     
     // Si el ancho calculado es mayor que el disponible, ajustar
-    let anchoDisponible = _ancho * 2.0; // Mucho más ancho (antes 1.6)
+    let anchoDisponible = _ancho * (width < 768 ? 1.5 : 2.0); // Menos ancho en móviles
     if(anchoImagen > anchoDisponible) {
       anchoImagen = anchoDisponible;
       alturaImagen = (img.height / img.width) * anchoImagen;
     }
     
-    let imgY = _y - _alto/2 - alturaImagen/2 - 30; // 30px de separación (antes 25)
+    let imgY = _y - _alto/2 - alturaImagen/2 - (width < 768 ? 15 : 30); // Menos separación en móviles
     
     imageMode(CENTER);
     image(img, _x, imgY, anchoImagen, alturaImagen);
@@ -61,13 +77,19 @@ function dibujarBotonRegion(_x,_y,_ancho,_alto,_cartel,_colboton,_colcartel, _im
   rect(_x,_y, _ancho, _alto);
   fill(0); // Texto negro para todos los botones
   
-  // Ajustar tamaño de texto según el ancho del botón
+  // Ajustar tamaño de texto según el ancho del botón y la pantalla
   textFont('Chewy'); // Aplicar tipografía Chewy
-  if(_ancho < 150) {
-    textSize(22); // Texto más pequeño para botones angostos (antes 20)
+  let tamanoTexto;
+  if(width < 480) {
+    tamanoTexto = 12; // Móviles pequeños
+  } else if(width < 768) {
+    tamanoTexto = 16; // Tablets
+  } else if(_ancho < 150) {
+    tamanoTexto = 22; // Texto más pequeño para botones angostos
   } else {
-    textSize(32); // Texto para botones grandes (antes 28)
+    tamanoTexto = 32; // Texto para botones grandes
   }
+  textSize(tamanoTexto);
   text(_cartel,_x,_y);
 }
 
@@ -83,9 +105,30 @@ function dibujarBotonesDerecha(){
 function dibujarBotonesInferiores(){
 //Botones de regiones argentinas
 
-  let anchoBoton = 220;  // Mucho más anchos (antes 180)
-  let altoBoton = 60;    // Más altos (antes 50)
-  let sep = 310;         // Aumentado mucho más para las imágenes grandes (antes 230)
+  // Ajustar tamaños según el ancho de pantalla
+  let anchoBoton, altoBoton, sep;
+  
+  if(width < 480) {
+    // Móviles pequeños
+    anchoBoton = 100;
+    altoBoton = 40;
+    sep = 150;
+  } else if(width < 768) {
+    // Tablets
+    anchoBoton = 140;
+    altoBoton = 50;
+    sep = 210;
+  } else if(width < 1024) {
+    // Tablets grandes
+    anchoBoton = 180;
+    altoBoton = 55;
+    sep = 260;
+  } else {
+    // Escritorio
+    anchoBoton = 220;
+    altoBoton = 60;
+    sep = 310;
+  }
   
   // Si hay una región seleccionada, NO dibujar el botón (solo mostrar el texto descriptivo)
   if(typeof regionSeleccionada !== 'undefined' && regionSeleccionada !== null) {
@@ -103,11 +146,28 @@ function dibujarBotonesInferiores(){
 }
 
 function dibujarBotonVolver(){
-  // Botón Volver centrado en la parte inferior
-  let anchoBoton = 150;
-  let altoBoton = 50;
+  // Botón Volver centrado en la parte inferior - responsive
+  let anchoBoton, altoBoton, margenInferior;
+  
+  if(width < 480) {
+    // Móviles pequeños
+    anchoBoton = 120;
+    altoBoton = 40;
+    margenInferior = 20;
+  } else if(width < 768) {
+    // Tablets
+    anchoBoton = 140;
+    altoBoton = 45;
+    margenInferior = 25;
+  } else {
+    // Escritorio
+    anchoBoton = 150;
+    altoBoton = 50;
+    margenInferior = 30;
+  }
+  
   let x = windowWidth / 2; // Centrado horizontalmente
-  let y = windowHeight - altoBoton/2 - 30; // 30px del borde inferior
+  let y = windowHeight - altoBoton/2 - margenInferior;
   
   let colfinal = color(255, 100, 100); // Color rojo claro
   
@@ -130,7 +190,10 @@ function dibujarBotonVolver(){
   // Dibujar texto
   fill(0); // Texto negro
   textFont('Chewy');
-  textSize(28);
+  
+  // Ajustar tamaño de texto según pantalla
+  let tamanoTexto = width < 480 ? 18 : (width < 768 ? 22 : 28);
+  textSize(tamanoTexto);
   textAlign(CENTER, CENTER);
   text("Volver", x, y);
 }

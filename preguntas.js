@@ -44,26 +44,43 @@ function draw() {
   if (preguntas.preguntas.length > 0) {
     let pregunta = preguntas.preguntas[preguntaIndex];
 
-    textSize(24);
-    text(pregunta.pregunta, width / 2, 60);
+    // Ajustar tamaño de texto de pregunta según pantalla
+    let tamanoPregunta = width < 480 ? 16 : (width < 768 ? 20 : 24);
+    textSize(tamanoPregunta);
+    text(pregunta.pregunta, width / 2, width < 768 ? 40 : 60);
 
-    // Mostrar imagen correspondiente a la pregunta
+    // Mostrar imagen correspondiente a la pregunta - responsive
     let imagenActual = imagenes[preguntaIndex];
     if (imagenActual) {
-      let anchoImagen = 500;
+      let anchoImagen;
+      if(width < 480) {
+        anchoImagen = width * 0.9; // 90% del ancho en móviles
+      } else if(width < 768) {
+        anchoImagen = width * 0.7; // 70% en tablets
+      } else {
+        anchoImagen = 500; // Tamaño fijo en escritorio
+      }
+      
       let altoImagen = (imagenActual.height / imagenActual.width) * anchoImagen;
-      image(imagenActual, width / 2 - anchoImagen / 2, 100, anchoImagen, altoImagen);
+      let yImagen = width < 768 ? 70 : 100; // Más arriba en móviles
+      image(imagenActual, width / 2 - anchoImagen / 2, yImagen, anchoImagen, altoImagen);
     }
 
-    textSize(20);
+    // Ajustar tamaño de texto de opciones según pantalla
+    let tamanoOpciones = width < 480 ? 14 : (width < 768 ? 16 : 20);
+    textSize(tamanoOpciones);
+    
     for (let i = 0; i < pregunta.opciones.length; i++) {
       let imagenActual = imagenes[preguntaIndex];
-      let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * 500 : 0;
-      let y = 150 + altoImagen + i * 50; // Aumentado de 120 a 150 para más espacio
+      let anchoImagen = width < 480 ? width * 0.9 : (width < 768 ? width * 0.7 : 500);
+      let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * anchoImagen : 0;
+      let yBase = width < 768 ? 70 : 100;
+      let espaciadoOpciones = width < 480 ? 40 : (width < 768 ? 45 : 50);
+      let y = yBase + altoImagen + 50 + i * espaciadoOpciones;
       
-      // Dimensiones del contenedor
-      let anchoContenedor = 600;
-      let altoContenedor = 42;
+      // Dimensiones del contenedor - responsive
+      let anchoContenedor = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 600);
+      let altoContenedor = width < 480 ? 38 : 42;
       
       // Detectar hover para efecto visual
       let isHover = mouseX > width / 2 - anchoContenedor/2 && 
@@ -121,42 +138,50 @@ function draw() {
       }
       
       textAlign(CENTER, CENTER);
-      textSize(20);
+      textSize(tamanoOpciones);
       text(pregunta.opciones[i], width / 2, y);
       pop();
     }
   }
   
-  // Mostrar puntaje en la esquina superior derecha
+  // Mostrar puntaje en la esquina superior derecha - responsive
   push();
   fill(0);
-  textSize(28);
+  let tamanoPuntaje = width < 480 ? 18 : (width < 768 ? 22 : 28);
+  textSize(tamanoPuntaje);
   textAlign(RIGHT, TOP);
-  text("Puntaje: " + puntaje, width - 30, 30);
+  let margenPuntaje = width < 480 ? 15 : 30;
+  text("Puntaje: " + puntaje, width - margenPuntaje, margenPuntaje);
   pop();
   
   // Solo mostrar mensaje si no ha finalizado
   if(!fin){
-    textSize(20);
+    let tamanoMensaje = width < 480 ? 14 : (width < 768 ? 16 : 20);
+    textSize(tamanoMensaje);
     fill(0); // Color del mensaje (negro)
-    text(mensaje, width / 2, height - 80);
+    text(mensaje, width / 2, height - (width < 768 ? 60 : 80));
   }
   
   if(fin){
     push();
-    textSize(52);
+    let tamanoPuntajeFinal = width < 480 ? 28 : (width < 768 ? 40 : 52);
+    textSize(tamanoPuntajeFinal);
     textAlign(CENTER, CENTER);
     fill(puntaje >= 0 ? color(0, 150, 0) : color(200, 0, 0));
-    text('Puntaje Final: ' + puntaje, width / 2, height - 60);
+    text('Puntaje Final: ' + puntaje, width / 2, height - (width < 768 ? 50 : 60));
     pop();
     
     // Mostrar botón para volver al inicio si no existe
     if (!botonVolver) {
+      let anchoBoton = width < 480 ? 160 : 200;
+      let altoBoton = width < 480 ? 40 : 50;
+      let tamanoBoton = width < 480 ? 14 : 18;
+      
       botonVolver = createButton("🏠 Volver al Inicio");
-      botonVolver.position(width / 2 - 100, height - 150);
-      botonVolver.size(200, 50);
+      botonVolver.position(width / 2 - anchoBoton/2, height - (width < 768 ? 120 : 150));
+      botonVolver.size(anchoBoton, altoBoton);
       botonVolver.style('font-family', 'Chewy, cursive');
-      botonVolver.style('font-size', '18px');
+      botonVolver.style('font-size', tamanoBoton + 'px');
       botonVolver.style('background-color', '#4facfe');
       botonVolver.style('color', 'white');
       botonVolver.style('border', 'none');
@@ -169,18 +194,22 @@ function draw() {
     }
   }
 }
+
 function mousePressed() {
   if (preguntas.preguntas.length > 0 && (respuestaSeleccionada === -1 || respuestaAnterior != -1))  {
     let pregunta = preguntas.preguntas[preguntaIndex];
     let imagenActual = imagenes[preguntaIndex];
-    let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * 500 : 0;
+    let anchoImagen = width < 480 ? width * 0.9 : (width < 768 ? width * 0.7 : 500);
+    let altoImagen = imagenActual ? (imagenActual.height / imagenActual.width) * anchoImagen : 0;
     
-    // Dimensiones del contenedor (iguales a las de draw())
-    let anchoContenedor = 600;
-    let altoContenedor = 42;
+    // Dimensiones del contenedor (iguales a las de draw()) - responsive
+    let anchoContenedor = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 600);
+    let altoContenedor = width < 480 ? 38 : 42;
+    let yBase = width < 768 ? 70 : 100;
+    let espaciadoOpciones = width < 480 ? 40 : (width < 768 ? 45 : 50);
     
     for (let i = 0; i < pregunta.opciones.length; i++) {
-      let y = 150 + altoImagen + i * 50; // Aumentado de 120 a 150 para coincidir con draw()
+      let y = yBase + altoImagen + 50 + i * espaciadoOpciones;
 
       if (mouseX > width / 2 - anchoContenedor/2 && 
           mouseX < width / 2 + anchoContenedor/2 && 
