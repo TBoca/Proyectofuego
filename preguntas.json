@@ -2,7 +2,7 @@
   "preguntas": [
   {
     "categoria": "Chaco",
-    "pregunta": "¿Qué región forestal corresponde principalmente a la provincia del Chaco?",
+    "pregunta": "¿Qué región forestal corresponde a la provincia del Chaco?",
     "opciones": [
       "Monte - grado de incendio medio",
       "Chaqueño - grado de incendio alto",
@@ -54,7 +54,7 @@
   },
   {
     "categoria": "Neuquén",
-    "pregunta": "¿Qué región forestal se extiende en la cordillera sur de Neuquén?",
+    "pregunta": "¿Qué región forestal hay en la cordillera sur de Neuquén?",
     "opciones": [
       "Monte - grado de incendio medio",
       "Patagonia - grado de incendio muy alto",

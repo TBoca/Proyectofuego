@@ -83,8 +83,8 @@ function draw() {
     
     fill(0);
     textAlign(CENTER);
-    // Centrar el texto dentro del contenedor
-    text(pregunta.pregunta, width / 2, yPregunta);
+    // Centrar el texto dentro del contenedor con ancho máximo
+    text(pregunta.pregunta, width / 2 - anchoPregunta/2 + 10, yPregunta, anchoPregunta - 20);
 
     // Mostrar imagen correspondiente a la pregunta - responsive
     let imagenActual = imagenes[preguntaIndex];
@@ -186,22 +186,34 @@ function draw() {
       pop();
     }
     
+    // Calcular posición después de la última opción
+    let imagenParaPosicion = imagenes[preguntaIndex];
+    let anchoImagenPos = width < 480 ? width * 0.7 : (width < 768 ? width * 0.55 : 380);
+    let altoImagenPos = imagenParaPosicion ? (imagenParaPosicion.height / imagenParaPosicion.width) * anchoImagenPos : 0;
+    let yBase = width < 768 ? 110 : 130;
+    let espaciadoOpciones = width < 480 ? 50 : (width < 768 ? 52 : 55);
+    let margenSuperior = width < 480 ? 20 : 30;
+    let yUltimaOpcion = yBase + altoImagenPos + margenSuperior + (pregunta.opciones.length - 1) * espaciadoOpciones;
+    let altoContenedor = width < 480 ? 40 : 44;
+    
     // Solo mostrar mensaje si no ha finalizado
     if(!fin){
       push();
-      let tamanoMensaje = width < 480 ? 15 : (width < 768 ? 17 : 20);
-      // Fondo para el mensaje
+      let tamanoMensaje = width < 480 ? 14 : (width < 768 ? 16 : 18);
+      // Fondo para el mensaje - más alto para contener pistas largas
       fill(255, 255, 255, 220);
       noStroke();
       rectMode(CENTER);
-      let anchoMensaje = width < 480 ? width * 0.9 : (width < 768 ? width * 0.8 : 600);
-      let yMensaje = height - (width < 768 ? 90 : 110);
-      rect(width / 2, yMensaje, anchoMensaje, width < 480 ? 40 : 50, 10);
+      let anchoMensaje = width < 480 ? width * 0.95 : (width < 768 ? width * 0.85 : 650);
+      let altoMensaje = width < 480 ? 100 : (width < 768 ? 100 : 110);
+      let yMensaje = yUltimaOpcion + altoContenedor/2 + (width < 480 ? 70 : 80);
+      rect(width / 2, yMensaje, anchoMensaje, altoMensaje, 10);
       
       fill(0);
       textSize(tamanoMensaje);
-      textAlign(CENTER);
-      text(mensaje, width / 2, yMensaje);
+      textAlign(CENTER, TOP);
+      // Con ancho máximo para que baje de renglón automáticamente
+      text(mensaje, width / 2, yMensaje - altoMensaje/2 + 8, anchoMensaje - 20);
       pop();
     }
     
@@ -213,8 +225,10 @@ function draw() {
     let tamanoPuntaje = width < 480 ? 18 : (width < 768 ? 22 : 28);
     let anchoCajaPuntaje = width < 480 ? 140 : 180;
     let altoCajaPuntaje = width < 480 ? 38 : 48;
-    // Usar windowHeight para que esté visible en la pantalla actual, no al final del canvas
-    let yPuntaje = windowHeight - (width < 768 ? 40 : 50);
+    // Posicionar justo después del mensaje (que ahora es más alto) o de las opciones
+    let altoMensaje = width < 480 ? 100 : (width < 768 ? 100 : 110);
+    let separacionPuntaje = width < 480 ? 30 : 40;
+    let yPuntaje = yUltimaOpcion + altoContenedor/2 + (fin ? separacionPuntaje : (width < 480 ? 70 + altoMensaje/2 + 30 : 80 + altoMensaje/2 + 40));
     rect(width / 2, yPuntaje, anchoCajaPuntaje, altoCajaPuntaje, 8);
     
     fill(0);
@@ -225,12 +239,24 @@ function draw() {
   }
   
   if(fin){
+    // Calcular posición después del puntaje
+    let pregunta = preguntas.preguntas[preguntaIndex];
+    let imagenParaPosicion = imagenes[preguntaIndex];
+    let anchoImagenPos = width < 480 ? width * 0.7 : (width < 768 ? width * 0.55 : 380);
+    let altoImagenPos = imagenParaPosicion ? (imagenParaPosicion.height / imagenParaPosicion.width) * anchoImagenPos : 0;
+    let yBase = width < 768 ? 110 : 130;
+    let espaciadoOpciones = width < 480 ? 50 : (width < 768 ? 52 : 55);
+    let margenSuperior = width < 480 ? 20 : 30;
+    let yUltimaOpcion = yBase + altoImagenPos + margenSuperior + (pregunta.opciones.length - 1) * espaciadoOpciones;
+    let altoContenedor = width < 480 ? 40 : 44;
+    
     push();
     let tamanoPuntajeFinal = width < 480 ? 28 : (width < 768 ? 40 : 52);
     textSize(tamanoPuntajeFinal);
     textAlign(CENTER);
     fill(puntaje >= 0 ? color(0, 150, 0) : color(200, 0, 0));
-    text('Puntaje Final: ' + puntaje, width / 2, height - (width < 768 ? 50 : 60));
+    let yPuntajeFinal = yUltimaOpcion + altoContenedor/2 + (width < 480 ? 80 : 100);
+    text('Puntaje Final: ' + puntaje, width / 2, yPuntajeFinal);
     pop();
     
     // Mostrar botón para volver al inicio si no existe
@@ -238,9 +264,10 @@ function draw() {
       let anchoBoton = width < 480 ? 160 : 200;
       let altoBoton = width < 480 ? 40 : 50;
       let tamanoBoton = width < 480 ? 14 : 18;
+      let yBoton = yPuntajeFinal + (width < 480 ? 50 : 70);
       
       botonVolver = createButton("🏠 Volver al Inicio");
-      botonVolver.position(width / 2 - anchoBoton/2, height - (width < 768 ? 120 : 150));
+      botonVolver.position(width / 2 - anchoBoton/2, yBoton);
       botonVolver.size(anchoBoton, altoBoton);
       botonVolver.style('font-family', 'Chewy, cursive');
       botonVolver.style('font-size', tamanoBoton + 'px');
